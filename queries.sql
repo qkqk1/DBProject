@@ -56,11 +56,14 @@ ORDER BY
   client_id;
 
 -- Получить список всех сотрудников, работающих доставщиком:
-SELECT
+SELECT DISTINCT
   s.staff_name, s.staff_surname;
 FROM
-  delivery.Staff s
-WHERE Staff.profession_name = "Доставщик";
+  delivery.Staff s;
+JOIN
+  delivery.Professions p ON s.profession_id = p.profession_id;
+WHERE
+  Staff.profession_name = "Доставщик";
 
 -- Вывести список заказов, сделанных в Москве:
 SELECT
