@@ -61,7 +61,7 @@ SELECT
   s.staff_name, s.staff_surname
 FROM
   delivery.Staff s
-WHERE Staff.profession_id = 2;
+WHERE Staff.profession_name = "Доставщик";
 
 -- Вывести список заказов, сделанных в Москве:
 -- Вывести часовой пояс города с наибольшим количеством заказов:
