@@ -23,7 +23,7 @@ ORDER BY
 LIMIT 5;
 
 -- Запрос на вывод списка клиентов, оставивших отзывы с оценкой 3:
-SELECT 
+SELECT DISTINCT
   c.client_name,
   r.review_text,
   r.review_rating
@@ -66,7 +66,7 @@ WHERE
   p.profession_name = 'Курьер ночной смены';
 
 -- Вывести список заказов, сделанных в Москве:
-SELECT
+SELECT DISTINCT
   o.order_id;
 FROM
   delivery.Orders o;
