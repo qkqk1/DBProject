@@ -55,15 +55,15 @@ WHERE
 ORDER BY
   client_id;
 
--- Получить список всех сотрудников, работающих доставщиком:
+-- Получить список всех сотрудников, работающих курьером ночной смены:
 SELECT DISTINCT
-  s.staff_name, s.staff_surname;
+  s.staff_name, s.staff_surname
 FROM
-  delivery.Staff s;
+  delivery.Staff s
 JOIN
-  delivery.Professions p ON s.profession_id = p.profession_id;
+  delivery.Professions p ON s.profession_id = p.profession_id
 WHERE
-  Staff.profession_name = "Доставщик";
+  p.profession_name = 'Курьер ночной смены';
 
 -- Вывести список заказов, сделанных в Москве:
 SELECT
