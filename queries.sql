@@ -56,14 +56,22 @@ ORDER BY
   client_id;
 
 -- Получить список всех сотрудников, работающих доставщиком:
-
 SELECT
-  s.staff_name, s.staff_surname
+  s.staff_name, s.staff_surname;
 FROM
   delivery.Staff s
 WHERE Staff.profession_name = "Доставщик";
 
 -- Вывести список заказов, сделанных в Москве:
+SELECT
+  o.order_id;
+FROM
+  delivery.Orders o;
+JOIN
+  delivery.Cities c ON o.order_id = c.order_id;
+WHERE
+ Cities.city_name = "Москва";
+
 -- Вывести часовой пояс города с наибольшим количеством заказов:
 -- Вывести список всех промоакций, действующих в настоящее время вместе с их описанием:
 -- Вывести список всех блюд дешевле 200 рублей и их стоимость:
