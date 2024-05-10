@@ -61,8 +61,6 @@ SELECT
   s.staff_name, s.staff_surname
 FROM
   delivery.Staff s
-JOIN 
-  
 WHERE Staff.profession_id = 2;
 
 -- Вывести список заказов, сделанных в Москве:
