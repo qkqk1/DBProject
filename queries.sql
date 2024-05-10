@@ -8,6 +8,7 @@ JOIN
 GROUP BY 
   p.profession_name;
 
+
 -- Список наиболее часто покупаемого блюда и общее количество заказов с этим блюдом:
 SELECT
   d.dish_name,
@@ -20,7 +21,8 @@ GROUP BY
   d.dish_name
 ORDER BY
   total_orders DESC
-LIMIT 5;
+LIMIT 6;
+
 
 -- Запрос на вывод списка клиентов, оставивших отзывы с оценкой 3:
 SELECT DISTINCT
@@ -33,6 +35,7 @@ JOIN
   delivery.Reviews r ON c.client_id = r.client_id
 WHERE 
   r.review_rating = 3;
+
 
 -- Список клиентов, заказавших блюдо дороже 450 рублей:
 SELECT DISTINCT 
@@ -55,6 +58,7 @@ WHERE
 ORDER BY
   client_id;
 
+
 -- Получить список всех сотрудников, работающих курьером ночной смены:
 SELECT DISTINCT
   s.staff_name, s.staff_surname
@@ -65,17 +69,60 @@ JOIN
 WHERE
   p.profession_name = 'Курьер ночной смены';
 
+
 -- Вывести список заказов, сделанных в Москве:
 SELECT DISTINCT
-  o.order_id;
+  o.order_id
 FROM
-  delivery.Orders o;
+  delivery.Orders o
 JOIN
-  delivery.Cities c ON o.order_id = c.order_id;
+  delivery.Cities c ON o.order_id = c.order_id
 WHERE
- Cities.city_name = "Москва";
+  c.city_name = 'Москва';
 
--- Вывести часовой пояс города с наибольшим количеством заказов:
+
+-- Вывести часовой пояс города с наибольшей общей стоимостью заказа и саму его стоимость:
+SELECT DISTINCT
+  c.city_time_zone, o.order_total_cost
+FROM
+  delivery.Cities c
+JOIN
+  delivery.Orders o ON c.order_id = o.order_id
+WHERE
+  order_total_cost = (SELECT MAX(order_total_cost) FROM delivery.Orders);
+
+
+-- Вывести список всех блюд дешевле 300 рублей и их стоимость:
+SELECT DISTINCT
+  d.dish_name, d.dish_price
+FROM
+  delivery.Dishes d
+WHERE
+  d.dish_price < 300;
+
+
 -- Вывести список всех промоакций, действующих в настоящее время вместе с их описанием:
--- Вывести список всех блюд дешевле 200 рублей и их стоимость:
--- 
+SELECT
+  p.promotion_name, p.promotion_description
+FROM
+  delivery.Promotions p
+WHERE
+  p.promotion_datetime_start < CURRENT_TIMESTAMP AND p.promotion_datetime_end > CURRENT_TIMESTAMP;
+
+
+-- Запрос на вывод количества заказов, сделанных каждым сотрудником за последний месяц:
+SELECT 
+  s.staff_id,
+  s.staff_name,
+  s.staff_surname,
+  COUNT(o.order_id) AS total_orders
+FROM 
+  delivery.Staff s
+JOIN 
+  delivery.Orders o ON s.staff_id = o.staff_id
+WHERE 
+  o.order_datetime_end >= CURRENT_DATE - INTERVAL '1 month'
+GROUP BY 
+  s.staff_id, s.staff_name
+ORDER BY 
+  total_orders DESC;
