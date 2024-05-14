@@ -27,6 +27,6 @@ $$ LANGUAGE plpgsql;
 
 -- Триггер, вызывающий функцию update_restaurant_rating():
 CREATE TRIGGER update_restaurant_rating_trigger
-AFTER INSERT OR UPDATE OR DELETE ON restaurant.Orders_and_Dishes
+AFTER INSERT OR UPDATE OR DELETE ON delivery.Orders_and_Dishes
 FOR EACH ROW
 EXECUTE FUNCTION update_restaurant_rating();
