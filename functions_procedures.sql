@@ -1,47 +1,3 @@
--- Процедура для подсчета суммарной стоимости заказа:
-CREATE OR REPLACE PROCEDURE CalculateOrderTotalCost(order_id_input INTEGER)
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    total_cost INTEGER;
-BEGIN
-    total_cost := 0;
-
-    SELECT SUM(d.dish_price * od.quantity)
-    INTO total_cost
-    FROM restaurant.Orders_x_Dishes od
-    JOIN restaurant.Dishes d ON od.dish_id = d.dish_id
-    WHERE od.order_id = order_id_input;
-
-    RAISE NOTICE 'Суммарная стоимость заказа с идентификатором % составляет % рублей', order_id_input, total_cost;
-END;
-$$;
--- CALL CalculateOrderTotalCost(1); - пример вызова.
-
--- Функцию, выводящая какие ингридиенты и в каких количествах нужны для выполнения этого заказа:
-CREATE OR REPLACE FUNCTION GetIngredientsForOrder(order_id INTEGER)
-RETURNS TABLE (
-    ingredient_name VARCHAR(255),
-    ingredient_quantity INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        i.ingredient_name,
-        oxd.quantity AS ingredient_quantity
-    FROM
-        restaurant.Orders_x_Dishes oxd
-    JOIN
-        restaurant.Dishes_x_Ingredients dxi ON oxd.dish_id = dxi.dish_id
-    JOIN
-        restaurant.Ingredients i ON dxi.ingredient_id = i.ingredient_id
-    WHERE
-        oxd.order_id = GetIngredientsForOrder.order_id;
-END;
-$$ LANGUAGE plpgsql;
-
--- SELECT * FROM GetIngredientsForOrder(1);- пример вызова.
-
 -- Функция, выводящая когда должен выходить на работу каждый сотрудник данного заказа:
 CREATE OR REPLACE FUNCTION GetStaffProfessionTimeForOrder(order_id INTEGER)
 RETURNS TABLE (
@@ -70,4 +26,36 @@ $$ LANGUAGE plpgsql;
 
 -- SELECT * FROM GetStaffProfessionTimeForOrder(1);- пример вызова.
 
--- Функция выводящая 
+-- Функция выводящая список ресторанов, из которых клиент заказывал еду:
+CREATE OR REPLACE FUNCTION GetRestaurantsFromClients(client_id INTEGER)
+RETURNS TABLE (
+    client_name VARCHAR(255),
+    client_surname VARCHAR(255),
+    restaurant_name VARCHAR(255);
+) AS $$
+BEGIN
+    RETURN Query
+    SELECT
+        c.client_name,
+        c.client_surname,
+        r.restaurant_name
+    FROM
+        delivery.Order_History oh
+    JOIN
+        delivery.Client c ON oh.client_id = c.client_id
+    JOIN
+        deivery.Orders o ON c.client_id = o.client_id
+    JOIN
+        delivery.Orders_and_Dishes od ON o.order_id = od.order_id
+    JOIN
+        delivery.Dishes d ON od.order_id = d.order_id
+    JOIN
+        delivery.Dishes_and_Restaurants dr ON d.dish_id = dr.dish_id
+    JOIN
+        delivery.Restaurants r ON dr.restaurant_id = r.restaurant_id
+    WHERE 
+        oh.client_id = GetRestaurantsFromClients.client_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- SELECT * FROM GetRestaurantsFromClients(1);- пример вызова.
