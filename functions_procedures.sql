@@ -62,9 +62,9 @@ BEGIN
     JOIN
         delivery.Staff s ON o.staff_id = s.staff_id
     JOIN
-        delivery.Propession p ON s.profession_id = p.profession_id
+        delivery.Profession p ON s.profession_id = p.profession_id
     WHERE
-        o.order_id = GetStaffProfessionTimeForOrder.order_id
+        o.order_id = GetStaffProfessionTimeForOrder.order_id;
 END;
 $$ LANGUAGE plpgsql;
 
