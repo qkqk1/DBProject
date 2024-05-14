@@ -69,3 +69,5 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- SELECT * FROM GetStaffProfessionTimeForOrder(1);- пример вызова.
+
+-- Функция выводящая 
