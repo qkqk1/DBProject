@@ -40,7 +40,7 @@ BEGIN
   UPDATE delivery.Restaurants
   SET restaurant_comment = new_restaurant_comment
   WHERE restaurant_id IN (
-    SELECT rd.restaurant_id
+    SELECT dr.restaurant_id
     FROM delivery.Dishes_and_Restaurants dr
     JOIN delivery.Orders_and_Dishes od ON dr.dish_id = od.dish_id
     WHERE od.order_id = NEW.order_id
