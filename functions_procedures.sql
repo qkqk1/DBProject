@@ -42,5 +42,30 @@ $$ LANGUAGE plpgsql;
 
 -- SELECT * FROM GetIngredientsForOrder(1);- пример вызова.
 
--- Функция, выводящая когда должен выходить на работу каждый сотрудник:
-CREATE OR REPLACE FUNCTION GetProfessionTimeForStaff(staff_id INTEGER)
+-- Функция, выводящая когда должен выходить на работу каждый сотрудник данного заказа:
+CREATE OR REPLACE FUNCTION GetStaffProfessionTimeForOrder(order_id INTEGER)
+RETURNS TABLE (
+    staff_name VARCHAR(255), 
+    staff_surname VARCHAR(255),
+    proffession_start_time TIME,
+    profession_end_time TIME
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        s.staff_name,
+        s.staff_surname,
+        p.profession_start_time,
+        p.profession_end_time
+    FROM
+        delivery.Orders o
+    JOIN
+        delivery.Staff s ON o.staff_id = s.staff_id
+    JOIN
+        delivery.Propession p ON s.profession_id = p.profession_id
+    WHERE
+        o.order_id = GetStaffProfessionTimeForOrder.order_id
+END;
+$$ LANGUAGE plpgsql;
+
+-- SELECT * FROM GetStaffProfessionTimeForOrder(1);- пример вызова.
